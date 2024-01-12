@@ -6,14 +6,14 @@ const bodyParser = require('body-parser');
 const serverless = require('serverless-http')
 const router = express.Router();
 
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-//   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-//   next();
-// });
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  next();
+});
 
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 router.get('/', async (req, res) => {
   try {
@@ -38,6 +38,6 @@ router.post('/', async (req, res) => {
     console.error('Error reading the file:', error);
   }
 });
-app.use('/.netlify/functions/api', router);
+app.use('/', router);
 
 module.exports.handler = serverless(app);
