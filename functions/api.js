@@ -1,21 +1,21 @@
 const express = require('express');
 const app = express();
-const port = 3050;
 const fs = require('fs').promises;
 const path = require('path');
 const bodyParser = require('body-parser');
 const serverless = require('serverless-http')
+const router = express.Router();
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+//   next();
+// });
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
-app.get('/', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const filePath = path.join(__dirname, 'annotations.json');
     const data = await fs.readFile(filePath, 'utf8');
@@ -24,7 +24,7 @@ app.get('/', async (req, res) => {
     console.error('Error reading the file:', error);
   }
 });
-app.post('/', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     let { point }  = req.body;
     const filePath = path.join(__dirname, 'annotations.json');
@@ -38,5 +38,6 @@ app.post('/', async (req, res) => {
     console.error('Error reading the file:', error);
   }
 });
+app.use('/.netlify/functions/api', router);
 
-exports.handler = serverless(app);
+module.exports.handler = serverless(app);
